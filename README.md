@@ -134,7 +134,7 @@ These are not bundled with the repository and must be provided at deploy time.
 MIT License. See `LICENSE` for the full text.
 
 ## Citation
-If you use BioGraphRAG in published work, please cite the NVIDIA GraphRAG blog and G-Retriever paper listed above. 
+If you use BioGraphRAG in published work, please cite the NVIDIA GraphRAG blog and G-Retriever paper below. 
 
 ## Acknowledgements
 - BioGraphRAG builds upon GraphRAG patterns, PyTorch Geometric utilities, and the collective work of the hackathon team.
