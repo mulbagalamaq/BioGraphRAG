@@ -218,4 +218,3 @@ If you use BioGraphRAG in published work, please cite the NVIDIA GraphRAG blog a
 ## Acknowledgements
 
 - BioGraphRAG builds upon GraphRAG patterns, PyTorch Geometric utilities, and the collective work of the hackathon team.
--
