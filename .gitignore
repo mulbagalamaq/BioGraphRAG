@@ -16,6 +16,8 @@ test.pem
 .mypy_cache/
 logs/
 data/
+!data/local/sample_graph.json
+.streamlit/secrets.toml
 .ipynb_checkpoints/
 dist/
 build/

@@ -1,0 +1,226 @@
+{
+  "nodes": [
+    {
+      "id": "GENE_EGFR",
+      "type": "Gene",
+      "name": "EGFR",
+      "description": "Epidermal growth factor receptor - a protein that helps cells grow and divide",
+      "properties": {
+        "full_name": "Epidermal Growth Factor Receptor",
+        "aliases": ["ERBB1", "HER1"],
+        "pmids": ["PMID:12345678", "PMID:23456789"]
+      }
+    },
+    {
+      "id": "GENE_TP53",
+      "type": "Gene",
+      "name": "TP53",
+      "description": "Tumor protein p53 - a tumor suppressor gene that regulates cell division",
+      "properties": {
+        "full_name": "Tumor Protein P53",
+        "aliases": ["P53"],
+        "pmids": ["PMID:34567890", "PMID:45678901"]
+      }
+    },
+    {
+      "id": "GENE_KRAS",
+      "type": "Gene",
+      "name": "KRAS",
+      "description": "KRAS proto-oncogene - involved in cell signaling pathways that control cell growth",
+      "properties": {
+        "full_name": "KRAS Proto-Oncogene, GTPase",
+        "aliases": ["K-RAS"],
+        "pmids": ["PMID:56789012", "PMID:67890123"]
+      }
+    },
+    {
+      "id": "GENE_BRCA1",
+      "type": "Gene",
+      "name": "BRCA1",
+      "description": "Breast cancer type 1 susceptibility protein - involved in DNA repair",
+      "properties": {
+        "full_name": "BRCA1 DNA Repair Associated",
+        "aliases": ["BRCA1"],
+        "pmids": ["PMID:78901234", "PMID:89012345"]
+      }
+    },
+    {
+      "id": "DISEASE_COLON_CANCER",
+      "type": "Disease",
+      "name": "Colon Cancer",
+      "description": "Colorectal cancer is cancer that starts in the colon or rectum",
+      "properties": {
+        "synonyms": ["Colorectal Cancer", "CRC"],
+        "icd10": "C18",
+        "pmids": ["PMID:11111111", "PMID:22222222"]
+      }
+    },
+    {
+      "id": "DISEASE_LUNG_CANCER",
+      "type": "Disease",
+      "name": "Lung Cancer",
+      "description": "Cancer that begins in the lungs, often associated with smoking",
+      "properties": {
+        "synonyms": ["Pulmonary Carcinoma", "Lung Carcinoma"],
+        "icd10": "C34",
+        "pmids": ["PMID:33333333", "PMID:44444444"]
+      }
+    },
+    {
+      "id": "DISEASE_BREAST_CANCER",
+      "type": "Disease",
+      "name": "Breast Cancer",
+      "description": "Cancer that forms in the cells of the breasts",
+      "properties": {
+        "synonyms": ["Mammary Carcinoma"],
+        "icd10": "C50",
+        "pmids": ["PMID:55555555", "PMID:66666666"]
+      }
+    },
+    {
+      "id": "DRUG_ERLOTINIB",
+      "type": "Drug",
+      "name": "Erlotinib",
+      "description": "An EGFR tyrosine kinase inhibitor used to treat non-small cell lung cancer",
+      "properties": {
+        "brand_name": "Tarceva",
+        "drug_class": "EGFR inhibitor",
+        "pmids": ["PMID:77777777", "PMID:88888888"]
+      }
+    },
+    {
+      "id": "DRUG_CETUXIMAB",
+      "type": "Drug",
+      "name": "Cetuximab",
+      "description": "A monoclonal antibody that blocks EGFR, used to treat colorectal cancer",
+      "properties": {
+        "brand_name": "Erbitux",
+        "drug_class": "EGFR antibody",
+        "pmids": ["PMID:99999999", "PMID:10101010"]
+      }
+    },
+    {
+      "id": "DRUG_OLAPARIB",
+      "type": "Drug",
+      "name": "Olaparib",
+      "description": "A PARP inhibitor used to treat BRCA-mutated cancers",
+      "properties": {
+        "brand_name": "Lynparza",
+        "drug_class": "PARP inhibitor",
+        "pmids": ["PMID:20202020", "PMID:30303030"]
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "GENE_EGFR",
+      "target": "DISEASE_COLON_CANCER",
+      "relation": "ASSOCIATED_WITH",
+      "description": "EGFR is overexpressed in colon cancer and associated with poor prognosis",
+      "properties": {
+        "evidence": "Multiple studies show elevated EGFR expression in colorectal tumors",
+        "pmids": ["PMID:12345678", "PMID:11111111"]
+      }
+    },
+    {
+      "source": "GENE_EGFR",
+      "target": "DISEASE_LUNG_CANCER",
+      "relation": "ASSOCIATED_WITH",
+      "description": "EGFR mutations are common in non-small cell lung cancer",
+      "properties": {
+        "evidence": "EGFR mutations found in 10-15% of NSCLC cases in Western populations",
+        "pmids": ["PMID:23456789", "PMID:33333333"]
+      }
+    },
+    {
+      "source": "GENE_KRAS",
+      "target": "DISEASE_COLON_CANCER",
+      "relation": "ASSOCIATED_WITH",
+      "description": "KRAS mutations are found in approximately 40% of colorectal cancers",
+      "properties": {
+        "evidence": "KRAS mutations predict resistance to EGFR-targeted therapy",
+        "pmids": ["PMID:56789012", "PMID:22222222"]
+      }
+    },
+    {
+      "source": "GENE_BRCA1",
+      "target": "DISEASE_BREAST_CANCER",
+      "relation": "ASSOCIATED_WITH",
+      "description": "BRCA1 mutations significantly increase breast cancer risk",
+      "properties": {
+        "evidence": "BRCA1 mutation carriers have up to 80% lifetime risk of breast cancer",
+        "pmids": ["PMID:78901234", "PMID:55555555"]
+      }
+    },
+    {
+      "source": "GENE_TP53",
+      "target": "DISEASE_COLON_CANCER",
+      "relation": "ASSOCIATED_WITH",
+      "description": "TP53 mutations are common in colorectal cancer progression",
+      "properties": {
+        "evidence": "TP53 mutations found in 50-70% of colorectal cancers",
+        "pmids": ["PMID:34567890", "PMID:11111111"]
+      }
+    },
+    {
+      "source": "DRUG_ERLOTINIB",
+      "target": "GENE_EGFR",
+      "relation": "INHIBITS",
+      "description": "Erlotinib inhibits EGFR tyrosine kinase activity",
+      "properties": {
+        "mechanism": "Competitive inhibition of ATP binding to EGFR kinase domain",
+        "pmids": ["PMID:77777777"]
+      }
+    },
+    {
+      "source": "DRUG_CETUXIMAB",
+      "target": "GENE_EGFR",
+      "relation": "INHIBITS",
+      "description": "Cetuximab blocks EGFR ligand binding",
+      "properties": {
+        "mechanism": "Monoclonal antibody binds to extracellular domain of EGFR",
+        "pmids": ["PMID:99999999"]
+      }
+    },
+    {
+      "source": "DRUG_ERLOTINIB",
+      "target": "DISEASE_LUNG_CANCER",
+      "relation": "TREATS",
+      "description": "Erlotinib is approved for treatment of EGFR-mutant NSCLC",
+      "properties": {
+        "indication": "First-line treatment for EGFR mutation-positive NSCLC",
+        "pmids": ["PMID:77777777", "PMID:33333333"]
+      }
+    },
+    {
+      "source": "DRUG_CETUXIMAB",
+      "target": "DISEASE_COLON_CANCER",
+      "relation": "TREATS",
+      "description": "Cetuximab is used to treat KRAS wild-type metastatic colorectal cancer",
+      "properties": {
+        "indication": "Treatment of EGFR-expressing, KRAS wild-type mCRC",
+        "pmids": ["PMID:99999999", "PMID:11111111"]
+      }
+    },
+    {
+      "source": "DRUG_OLAPARIB",
+      "target": "GENE_BRCA1",
+      "relation": "SYNTHETIC_LETHAL",
+      "description": "Olaparib is particularly effective in BRCA1-mutated cancers",
+      "properties": {
+        "mechanism": "PARP inhibition is synthetic lethal with BRCA1 deficiency",
+        "pmids": ["PMID:20202020"]
+      }
+    },
+    {
+      "source": "DRUG_OLAPARIB",
+      "target": "DISEASE_BREAST_CANCER",
+      "relation": "TREATS",
+      "description": "Olaparib is approved for BRCA-mutated breast cancer",
+      "properties": {
+        "indication": "Treatment of germline BRCA-mutated HER2-negative breast cancer",
+        "pmids": ["PMID:20202020", "PMID:55555555"]
+      }
+    }
+  ]
+}

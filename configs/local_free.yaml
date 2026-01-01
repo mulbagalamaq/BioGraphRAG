@@ -1,0 +1,88 @@
+# Free Local Configuration for BioGraphRAG
+# No AWS services required - runs entirely locally
+
+project:
+  name: biographrag-free
+  region: local
+  environment: dev
+
+graph:
+  backend: local  # Use local NetworkX instead of Neptune
+  id_property: "id"
+  label_prefixes: ["GENE_", "DISEASE_", "DRUG_"]
+
+paths:
+  local_data_dir: data/local
+  graph_dir: data/graph
+  embeddings_dir: data/embeddings
+  vector_index_path: data/embeddings/faiss_index
+  logs_dir: logs
+  sample_graph: data/local/sample_graph.json
+
+# No S3 needed for local deployment
+s3:
+  bucket: null
+  prefixes:
+    raw: null
+    staging: null
+    graph: null
+
+# No Neptune needed
+neptune:
+  endpoint: null
+  use_iam_auth: false
+
+# Use FAISS instead of OpenSearch
+open_search:
+  endpoint: null
+  use_iam_auth: false
+
+# Vector store configuration - use FAISS
+vector_store:
+  backend: faiss  # Local FAISS vector store
+  index_path: data/embeddings/faiss_index.bin
+  include_types:
+    - GENE_*
+    - DISEASE_*
+    - DRUG_*
+
+# Lightweight embedding model
+embedding_model:
+  document_model: sentence-transformers/all-MiniLM-L6-v2  # Smaller, faster model
+  node_model: sentence-transformers/all-MiniLM-L6-v2
+
+# Free LLM options - user can choose
+llm:
+  provider: groq  # Free tier available
+  api_base: https://api.groq.com/openai/v1
+  api_key: YOUR_GROQ_API_KEY_HERE  # Get free at https://console.groq.com
+  model_name: llama-3.1-8b-instant
+  temperature: 0.2
+  max_new_tokens: 512
+
+# Simplified PyG RAG settings
+pyg_rag:
+  enabled: true
+  model: node2vec
+  dim: 32  # Reduced for faster processing
+  walks_per_node: 3
+  walk_length: 10
+  context_size: 5
+  epochs: 1
+  learning_rate: 0.01
+  top_facts: 20  # Reduced for demo
+
+# Retrieval settings
+retrieval:
+  top_k: 5  # Reduced for demo
+  expansion_hops: 1  # Reduced for faster processing
+  prune_max_nodes: 20
+  prune_max_degree: 5
+  namespaces:
+    include:
+      - GENE_
+      - DISEASE_
+      - DRUG_
+
+app:
+  demo_questions: configs/demo_questions.yaml

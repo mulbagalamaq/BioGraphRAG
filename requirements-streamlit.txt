@@ -1,0 +1,9 @@
+# Lightweight requirements for Streamlit Cloud deployment
+# Only includes essential dependencies for the standalone app
+
+streamlit==1.37.0
+sentence-transformers==2.7.0
+scikit-learn==1.5.1
+numpy==1.26.4
+networkx==3.3
+requests==2.32.3
