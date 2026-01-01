@@ -71,7 +71,7 @@ def answer_question(config_path: str, question: str) -> Dict:
     max_degree = cfg.get("retrieval.prune_max_degree", 10)
     max_nodes = cfg.get("retrieval.prune_max_nodes", 40)
 
-    hits = vector_seed(config_path, question_vector, top_k)
+    hits = vector_seed(config_path, question_vector, top_k, question=question)
     if not hits:
         LOGGER.warning("Vector search returned no candidates for question: %s", question)
         return {
@@ -83,8 +83,13 @@ def answer_question(config_path: str, question: str) -> Dict:
             "evidence": [],
         }
 
-    seed_ids = [hit["id"].split("::")[-1] for hit in hits if "id" in hit]
-    nodes, edges = expand_graph(config_path, seed_ids, hops, max_degree)
+    # For realtime mode, expand_graph uses the question directly
+    backend = cfg.get("graph.backend", "").lower()
+    if backend == "realtime":
+        nodes, edges = expand_graph(config_path, [question], hops, max_degree)
+    else:
+        seed_ids = [hit["id"].split("::")[-1] for hit in hits if "id" in hit]
+        nodes, edges = expand_graph(config_path, seed_ids, hops, max_degree)
     nodes, edges = prune_graph(nodes, edges, max_nodes)
 
     if not nodes:

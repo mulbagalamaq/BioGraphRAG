@@ -49,20 +49,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration path
-CONFIG_PATH = str(Path(__file__).parent.parent / "configs" / "local_free.yaml")
+# Configuration path - use realtime config for live API data
+CONFIG_PATH = str(Path(__file__).parent.parent / "configs" / "realtime.yaml")
 
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize FAISS vector store with embeddings on startup."""
-    try:
-        logger.info("Initializing FAISS vector store...")
-        initialize_local_vector_store(CONFIG_PATH)
-        logger.info("Vector store initialized successfully")
-    except Exception as e:
-        logger.error(f"Failed to initialize vector store: {e}")
-        logger.warning("Continuing without pre-initialized vector store")
+    """Initialize backend (no setup needed for realtime mode)."""
+    from src.utils.config import load_config
+    cfg = load_config(CONFIG_PATH)
+    backend = cfg.get("graph.backend", "").lower()
+
+    if backend == "realtime":
+        logger.info("Using real-time API mode - fetching live data from PubMed, NCBI Gene, etc.")
+        logger.info("No pre-initialization required - data fetched on-demand")
+    else:
+        # Initialize FAISS vector store for local mode
+        try:
+            logger.info("Initializing FAISS vector store...")
+            initialize_local_vector_store(CONFIG_PATH)
+            logger.info("Vector store initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize vector store: {e}")
+            logger.warning("Continuing without pre-initialized vector store")
 
 
 class QuestionRequest(BaseModel):
@@ -85,16 +94,24 @@ def root():
     """Root endpoint with API information."""
     return {
         "status": "ok",
-        "message": "BioGraphRAG API - GraphRAG with GNN Fusion",
+        "message": "BioGraphRAG API - Real-time Biomedical GraphRAG",
         "version": "2.0.0",
+        "data_source": "Real-time APIs (PubMed, NCBI Gene, Europe PMC)",
         "pipeline": {
+            "data_fetching": "Real-time API calls",
             "embedding": "SentenceTransformers",
-            "vector_search": "FAISS",
-            "graph_backend": "Local (NetworkX)",
+            "sources": ["PubMed E-utilities", "NCBI Gene", "Europe PMC"],
             "gnn": "PyTorch Geometric",
             "pruning": "PCST-based",
-            "llm": "Configurable"
-        }
+            "llm": "Groq (free tier)"
+        },
+        "features": [
+            "Live biomedical data from PubMed",
+            "Gene information from NCBI",
+            "Literature mining and citations",
+            "Disease-gene associations",
+            "No pre-loaded data required"
+        ]
     }
 
 
@@ -156,43 +173,51 @@ async def qa_endpoint(request: QuestionRequest):
 
 @app.get("/api/stats")
 def get_stats():
-    """Get knowledge graph statistics."""
+    """Get API configuration and capabilities."""
+    from src.utils.config import load_config
+
     try:
-        import json
-
-        graph_file = Path(__file__).parent.parent / "data" / "local" / "sample_graph.json"
-
-        if not graph_file.exists():
-            return {"error": "Graph file not found"}
-
-        with open(graph_file, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        nodes = data.get("nodes", [])
-        edges = data.get("edges", [])
-
-        # Count by type
-        node_types = {}
-        for node in nodes:
-            node_type = node.get("type", "Unknown")
-            node_types[node_type] = node_types.get(node_type, 0) + 1
-
-        edge_types = {}
-        for edge in edges:
-            edge_type = edge.get("relation", "Unknown")
-            edge_types[edge_type] = edge_types.get(edge_type, 0) + 1
+        cfg = load_config(CONFIG_PATH)
 
         return {
-            "total_nodes": len(nodes),
-            "total_edges": len(edges),
-            "node_types": node_types,
-            "edge_types": edge_types,
+            "mode": "real-time",
+            "description": "Fetches live biomedical data from public APIs",
+            "data_sources": {
+                "pubmed": {
+                    "name": "PubMed E-utilities",
+                    "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/",
+                    "provides": "Biomedical publications, abstracts, citations",
+                    "rate_limit": "3 requests/second (10/sec with API key)"
+                },
+                "ncbi_gene": {
+                    "name": "NCBI Gene Database",
+                    "url": "https://www.ncbi.nlm.nih.gov/gene",
+                    "provides": "Gene information, sequences, descriptions",
+                    "rate_limit": "3 requests/second (10/sec with API key)"
+                },
+                "europe_pmc": {
+                    "name": "Europe PMC",
+                    "url": "https://www.ebi.ac.uk/europepmc/",
+                    "provides": "Biomedical literature search",
+                    "rate_limit": "Unlimited"
+                }
+            },
             "pipeline_config": {
-                "backend": "local",
-                "vector_store": "faiss",
-                "gnn_enabled": True,
-                "pruning": "PCST"
-            }
+                "backend": cfg.get("graph.backend"),
+                "vector_store": cfg.get("vector_store.backend"),
+                "gnn_enabled": cfg.get("pyg_rag.enabled", True),
+                "pruning": "PCST",
+                "llm_provider": cfg.get("llm.provider"),
+                "llm_model": cfg.get("llm.model_name")
+            },
+            "capabilities": [
+                "Real-time gene search",
+                "PubMed literature retrieval",
+                "Disease-gene association mining",
+                "Drug-target relationship extraction",
+                "Citation-based evidence linking"
+            ],
+            "no_data_storage": "All data fetched on-demand from APIs"
         }
 
     except Exception as e:

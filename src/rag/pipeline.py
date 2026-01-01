@@ -61,7 +61,10 @@ def _get_expander(config_path: str):
     elif backend == "local":
         from src.retrieval.expand_local import expand_subgraph
         return expand_subgraph
-    raise ValueError(f"Unsupported backend: {backend}. Use 'neptune' or 'local'")
+    elif backend == "realtime":
+        from src.retrieval.expand_realtime import expand_subgraph_realtime
+        return expand_subgraph_realtime
+    raise ValueError(f"Unsupported backend: {backend}. Use 'neptune', 'local', or 'realtime'")
 
 
 def encode_question(model_name: str, question: str) -> List[float]:
@@ -85,14 +88,17 @@ def encode_question(model_name: str, question: str) -> List[float]:
 
 
 
-def vector_seed(config_path: str, question_vec: List[float], top_k: int) -> List[Dict]:
-    """Fetch the top-k candidate nodes from OpenSearch or FAISS."""
+def vector_seed(config_path: str, question_vec: List[float], top_k: int, question: str = "") -> List[Dict]:
+    """Fetch the top-k candidate nodes from OpenSearch, FAISS, or real-time APIs."""
     from src.utils.config import load_config
 
     cfg = load_config(config_path)
     backend = cfg.get("vector_store.backend", "opensearch").lower()
 
-    if backend == "faiss" or backend == "local":
+    if backend == "realtime":
+        from src.retrieval.expand_realtime import query_realtime_vectors
+        return query_realtime_vectors(config_path, question, top_k=top_k)
+    elif backend == "faiss" or backend == "local":
         from src.retrieval.vector_store_local import query_local_vectors
         return query_local_vectors(config_path, question_vec, top_k=top_k)
     else:

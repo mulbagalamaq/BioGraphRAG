@@ -1,0 +1,80 @@
+# Real-time Configuration for BioGraphRAG
+# Fetches live data from PubMed, NCBI Gene, and other free biomedical APIs
+# No pre-loaded data required - all data fetched on-demand
+
+project:
+  name: biographrag-realtime
+  region: cloud
+  environment: production
+
+# Real-time API backend - no graph database needed
+graph:
+  backend: realtime  # Fetch data from APIs in real-time
+  id_property: "id"
+  label_prefixes: ["GENE_", "DISEASE_", "DRUG_", "PMID_"]
+
+paths:
+  logs_dir: logs
+
+# No S3 needed
+s3:
+  bucket: null
+
+# No Neptune needed
+neptune:
+  endpoint: null
+
+# No OpenSearch needed
+open_search:
+  endpoint: null
+
+# Real-time vector store - fetches from APIs
+vector_store:
+  backend: realtime  # Query APIs directly
+
+# Real-time API configuration
+realtime_apis:
+  ncbi_email: null  # Optional: your email for NCBI E-utilities
+  ncbi_api_key: null  # Optional: NCBI API key for higher rate limits (free to obtain)
+
+# Lightweight embedding model for LLM fusion
+embedding_model:
+  document_model: sentence-transformers/all-MiniLM-L6-v2
+  node_model: sentence-transformers/all-MiniLM-L6-v2
+
+# Free LLM - Groq API
+llm:
+  provider: groq
+  api_base: https://api.groq.com/openai/v1
+  api_key: ${GROQ_API_KEY}  # Set via environment variable
+  model_name: llama-3.1-8b-instant
+  temperature: 0.2
+  max_new_tokens: 512
+
+# PyG RAG settings (still used for ranking facts)
+pyg_rag:
+  enabled: true
+  model: node2vec
+  dim: 32
+  walks_per_node: 3
+  walk_length: 10
+  context_size: 5
+  epochs: 1
+  learning_rate: 0.01
+  top_facts: 20
+
+# Retrieval settings
+retrieval:
+  top_k: 10  # Number of initial API results
+  expansion_hops: 1  # Not used in realtime mode
+  prune_max_nodes: 30  # Limit total nodes from APIs
+  prune_max_degree: 5
+  namespaces:
+    include:
+      - GENE_
+      - DISEASE_
+      - DRUG_
+      - PMID_
+
+app:
+  demo_questions: configs/demo_questions.yaml
