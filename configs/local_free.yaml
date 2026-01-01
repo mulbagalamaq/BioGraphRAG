@@ -55,7 +55,7 @@ embedding_model:
 llm:
   provider: groq  # Free tier available
   api_base: https://api.groq.com/openai/v1
-  api_key: YOUR_GROQ_API_KEY_HERE  # Get free at https://console.groq.com
+  api_key: ${GROQ_API_KEY}  # Set this as environment variable
   model_name: llama-3.1-8b-instant
   temperature: 0.2
   max_new_tokens: 512
