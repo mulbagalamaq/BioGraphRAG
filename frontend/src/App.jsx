@@ -1,24 +1,54 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import Header from './components/Header'
-import SearchBar from './components/SearchBar'
-import ResultsPanel from './components/ResultsPanel'
-import GraphVisualization from './components/GraphVisualization'
-import ExampleQuestions from './components/ExampleQuestions'
-import GreekDecorations from './components/GreekDecorations'
-import './styles/App.css'
+/**
+ * BioGraphRAG Application
+ *
+ * Main application component providing biomedical question-answering capabilities
+ * using graph-based retrieval-augmented generation (GraphRAG) architecture.
+ *
+ * @module App
+ * @requires react
+ * @requires framer-motion
+ */
 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import Header from './components/Header';
+import SearchBar from './components/SearchBar';
+import ResultsPanel from './components/ResultsPanel';
+import GraphVisualization from './components/GraphVisualization';
+import ExampleQuestions from './components/ExampleQuestions';
+import BackgroundDecorations from './components/BackgroundDecorations';
+import './styles/App.css';
+
+/**
+ * Application root component
+ *
+ * Manages application state including user input, API responses,
+ * loading states, error handling, and graph visualization controls.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered application
+ */
 function App() {
-  const [question, setQuestion] = useState('')
-  const [results, setResults] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [showGraph, setShowGraph] = useState(false)
+  const [question, setQuestion] = useState('');
+  const [results, setResults] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showGraph, setShowGraph] = useState(false);
 
+  /**
+   * Handles question submission and API interaction
+   *
+   * Sends POST request to /api/qa endpoint with the user's question
+   * and processes the response containing answer, nodes, edges, and evidence.
+   *
+   * @async
+   * @param {string} searchQuestion - The biomedical question to process
+   * @throws {Error} When API request fails or returns non-OK status
+   */
   const handleSearch = async (searchQuestion) => {
-    setLoading(true)
-    setError(null)
-    setQuestion(searchQuestion)
+    setLoading(true);
+    setError(null);
+    setQuestion(searchQuestion);
 
     try {
       const response = await fetch('/api/qa', {
@@ -27,43 +57,42 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ question: searchQuestion }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch results')
+        throw new Error(`API request failed with status ${response.status}`);
       }
 
-      const data = await response.json()
-      setResults(data)
-      setShowGraph(true)
+      const data = await response.json();
+      setResults(data);
+      setShowGraph(true);
     } catch (err) {
-      setError(err.message)
-      console.error('Error:', err)
+      setError(err.message);
+      console.error('Error processing question:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
+  /**
+   * Handles example question selection
+   *
+   * @param {string} exampleQuestion - Pre-defined example question
+   */
   const handleExampleClick = (exampleQuestion) => {
-    setQuestion(exampleQuestion)
-    handleSearch(exampleQuestion)
-  }
+    setQuestion(exampleQuestion);
+    handleSearch(exampleQuestion);
+  };
 
   return (
-    <div className="app-container" style={{ position: 'relative', minHeight: '100vh' }}>
-      <GreekDecorations />
+    <div className="app-container">
+      <BackgroundDecorations />
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          padding: '2rem',
-          maxWidth: '1400px',
-          margin: '0 auto',
-        }}
+        className="app-content"
       >
         <Header />
 
@@ -94,30 +123,15 @@ function App() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '400px',
-              flexDirection: 'column',
-              gap: '2rem',
-            }}
+            className="loading-container"
           >
-            <div className="loading-spiral"></div>
+            <div className="loading-spinner" />
             <motion.p
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
-              style={{
-                fontSize: '1.2rem',
-                color: 'var(--sea-crystal)',
-                textAlign: 'center',
-              }}
+              className="loading-text"
             >
-              Consulting the Oracle of Delphi...
-              <br />
-              <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>
-                Searching biomedical knowledge graphs
-              </span>
+              Processing query and retrieving knowledge graph data
             </motion.p>
           </motion.div>
         )}
@@ -126,16 +140,10 @@ function App() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-card"
-            style={{
-              marginTop: '2rem',
-              padding: '2rem',
-              textAlign: 'center',
-              borderColor: '#ff6b6b',
-            }}
+            className="glass-card error-card"
           >
-            <h3 style={{ color: '#ff6b6b', marginBottom: '1rem' }}>⚠️ Error</h3>
-            <p>{error}</p>
+            <h3 className="error-title">Request Failed</h3>
+            <p className="error-message">{error}</p>
           </motion.div>
         )}
 
@@ -144,9 +152,9 @@ function App() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            style={{ marginTop: '3rem' }}
+            className="results-container"
           >
-            <div className="greek-divider"></div>
+            <div className="section-divider" />
 
             <ResultsPanel
               results={results}
@@ -159,7 +167,7 @@ function App() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 transition={{ duration: 0.6 }}
-                style={{ marginTop: '2rem' }}
+                className="graph-container"
               >
                 <GraphVisualization
                   nodes={results.nodes}
@@ -171,7 +179,7 @@ function App() {
         )}
       </motion.div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
