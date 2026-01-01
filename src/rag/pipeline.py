@@ -57,9 +57,11 @@ def _get_expander(config_path: str):
     backend = (cfg.get("graph.backend") or "neptune").lower()
     if backend == "neptune":
         from src.retrieval.expand_neptune import expand_subgraph
-
         return expand_subgraph
-    raise ValueError("Only 'neptune' backend is supported")
+    elif backend == "local":
+        from src.retrieval.expand_local import expand_subgraph
+        return expand_subgraph
+    raise ValueError(f"Unsupported backend: {backend}. Use 'neptune' or 'local'")
 
 
 def encode_question(model_name: str, question: str) -> List[float]:
@@ -84,9 +86,17 @@ def encode_question(model_name: str, question: str) -> List[float]:
 
 
 def vector_seed(config_path: str, question_vec: List[float], top_k: int) -> List[Dict]:
-    """Fetch the top-k candidate nodes from OpenSearch."""
+    """Fetch the top-k candidate nodes from OpenSearch or FAISS."""
+    from src.utils.config import load_config
 
-    return query_vectors(config_path, question_vec, top_k=top_k)
+    cfg = load_config(config_path)
+    backend = cfg.get("vector_store.backend", "opensearch").lower()
+
+    if backend == "faiss" or backend == "local":
+        from src.retrieval.vector_store_local import query_local_vectors
+        return query_local_vectors(config_path, question_vec, top_k=top_k)
+    else:
+        return query_vectors(config_path, question_vec, top_k=top_k)
 
 
 def expand_graph(config_path: str, seed_ids: List[str], hops: int, max_degree: int) -> Tuple[List[Dict], List[Dict]]:
