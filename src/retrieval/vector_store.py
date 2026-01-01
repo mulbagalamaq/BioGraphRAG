@@ -11,13 +11,24 @@ import argparse
 import json
 import logging
 from typing import Dict, Iterable, List, Tuple
-
-from opensearchpy import OpenSearch, RequestsHttpConnection
-from requests_aws4auth import AWS4Auth
-import boto3
-import faiss
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+
+# Optional imports - only needed for specific backends
+try:
+    from opensearchpy import OpenSearch, RequestsHttpConnection
+    from requests_aws4auth import AWS4Auth
+    import boto3
+    HAS_OPENSEARCH = True
+except ImportError:
+    HAS_OPENSEARCH = False
+
+try:
+    import faiss
+    HAS_FAISS = True
+except ImportError:
+    HAS_FAISS = False
 
 from src.utils.config import load_config
 
