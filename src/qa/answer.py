@@ -21,7 +21,14 @@ from src.rag.pipeline import (
     assemble_prompt,
 )
 from src.qa.prompt import build_prompt
-from src.retrieval.g_retriever import initialize_vector_store, retrieve_graph_context
+
+# Optional import - only needed for G-Retriever mode
+try:
+    from src.retrieval.g_retriever import initialize_vector_store, retrieve_graph_context
+    HAS_G_RETRIEVER = True
+except ImportError:
+    HAS_G_RETRIEVER = False
+
 from src.utils.config import load_config
 from src.utils.seed import seed_everything
 
@@ -200,7 +207,10 @@ def main() -> None:
 
     cfg = load_config(args.config)
     if args.initialize:
-        initialize_vector_store(args.config)
+        if HAS_G_RETRIEVER:
+            initialize_vector_store(args.config)
+        else:
+            LOGGER.warning("G-Retriever not available - skipping vector store initialization")
 
     if args.question_file.endswith(".json"):
         questions = json.loads(Path(args.question_file).read_text(encoding="utf-8"))
