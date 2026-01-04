@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir -r requirements-minimal.txt
 # Copy only the simple app
 COPY backend/simple_app.py .
 
-# Expose port
+# Expose port (Railway uses $PORT env var)
 EXPOSE 8000
 
-# Run the app
-CMD ["uvicorn", "simple_app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run the app - use PORT env var from Railway
+CMD uvicorn simple_app:app --host 0.0.0.0 --port ${PORT:-8000}
