@@ -1,0 +1,17 @@
+# Minimal Dockerfile for standalone backend
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install minimal dependencies
+COPY requirements-minimal.txt .
+RUN pip install --no-cache-dir -r requirements-minimal.txt
+
+# Copy only the simple app
+COPY backend/simple_app.py .
+
+# Expose port
+EXPOSE 8000
+
+# Run the app
+CMD ["uvicorn", "simple_app:app", "--host", "0.0.0.0", "--port", "8000"]
