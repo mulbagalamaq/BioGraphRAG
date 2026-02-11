@@ -16,10 +16,7 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="glass-card glass-card-strong">
           <div style={{
             display: 'flex',
@@ -29,27 +26,15 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
             flexWrap: 'wrap',
             gap: '1rem',
           }}>
-            <h2 style={{
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem',
-            }}>
-              <span style={{ color: 'var(--gold-accent)' }}>📜</span>
-              Oracle's Response
+            <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              Results
             </h2>
-
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="btn-greek"
               onClick={onToggleGraph}
-              style={{
-                padding: '0.8rem 1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-              }}
+              style={{ padding: '0.8rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
               <BiNetworkChart size={20} />
               {showGraph ? 'Hide Graph' : 'Show Graph'}
@@ -103,15 +88,8 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
             transition={{ duration: 0.3 }}
           >
             {activeTab === 'answer' && (
-              <div className="glass-card" style={{
-                background: 'rgba(255, 255, 255, 0.05)',
-                padding: '2rem',
-              }}>
-                <div style={{
-                  fontSize: '1.1rem',
-                  lineHeight: '1.8',
-                  color: 'var(--white-pearl)',
-                }}>
+              <div className="glass-card" style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '2rem' }}>
+                <div style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--white-pearl)' }}>
                   <ReactMarkdown>{results.answer || 'No answer available'}</ReactMarkdown>
                 </div>
               </div>
@@ -127,16 +105,9 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
                       className="glass-card"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        padding: '1.5rem',
-                      }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem' }}
                     >
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '1rem',
-                      }}>
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                         <div style={{
                           minWidth: '40px',
                           height: '40px',
@@ -151,11 +122,8 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
                           {index + 1}
                         </div>
                         <div style={{ flex: 1 }}>
-                          <h4 style={{
-                            color: 'var(--sea-crystal)',
-                            marginBottom: '0.5rem',
-                          }}>
-                            {node.name || node['~id']}
+                          <h4 style={{ color: 'var(--sea-crystal)', marginBottom: '0.5rem' }}>
+                            {node.name || node.id}
                           </h4>
                           {node.type && (
                             <div style={{
@@ -173,15 +141,6 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
                           <p style={{ color: 'rgba(255, 255, 255, 0.8)', margin: '0.5rem 0' }}>
                             {node.description || 'No description available'}
                           </p>
-                          {node.pmids && (
-                            <div style={{
-                              marginTop: '0.5rem',
-                              fontSize: '0.9rem',
-                              color: 'var(--gold-accent)',
-                            }}>
-                              📚 PMIDs: {Array.isArray(node.pmids) ? node.pmids.join(', ') : node.pmids}
-                            </div>
-                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -204,33 +163,36 @@ function ResultsPanel({ results, onToggleGraph, showGraph }) {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                       className="glass-card"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        padding: '1.5rem',
-                      }}
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '1.5rem' }}
                     >
-                      <div style={{
-                        display: 'flex',
-                        gap: '1rem',
-                        alignItems: 'flex-start',
-                      }}>
-                        <div style={{
-                          color: 'var(--gold-accent)',
-                          fontSize: '1.5rem',
-                        }}>
-                          🔬
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                        <div style={{ color: 'var(--gold-accent)', fontSize: '1.5rem' }}>
+                          &#128300;
                         </div>
-                        <div>
+                        <div style={{ flex: 1 }}>
                           <div style={{ color: 'var(--sea-crystal)', fontWeight: 600 }}>
-                            {item.id || item.name || `Evidence ${index + 1}`}
+                            {item.title || item.pmid || `Evidence ${index + 1}`}
                           </div>
-                          <div style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            marginTop: '0.5rem',
-                            fontSize: '0.95rem',
-                          }}>
-                            Score: {item.score ? item.score.toFixed(4) : 'N/A'}
-                          </div>
+                          {item.pmid && (
+                            <div style={{ color: 'rgba(255, 255, 255, 0.7)', marginTop: '0.3rem', fontSize: '0.9rem' }}>
+                              PMID: {item.pmid}
+                            </div>
+                          )}
+                          {item.url && (
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{ color: 'var(--sea-foam)', marginTop: '0.3rem', display: 'inline-block', fontSize: '0.9rem' }}
+                            >
+                              View on PubMed
+                            </a>
+                          )}
+                          {item.score != null && (
+                            <div style={{ color: 'rgba(255, 255, 255, 0.6)', marginTop: '0.3rem', fontSize: '0.85rem' }}>
+                              Relevance: {item.score.toFixed(4)}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </motion.div>

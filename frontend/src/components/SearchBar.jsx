@@ -37,10 +37,7 @@ function SearchBar({ value, onChange, onSearch, loading }) {
               value={value}
               onChange={(e) => onChange(e.target.value)}
               disabled={loading}
-              style={{
-                paddingRight: '60px',
-                fontSize: '1.1rem',
-              }}
+              style={{ paddingRight: '60px', fontSize: '1.1rem' }}
             />
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -80,8 +77,7 @@ function SearchBar({ value, onChange, onSearch, loading }) {
             fontSize: '0.9rem',
           }}
         >
-          <span style={{ color: 'var(--gold-accent)' }}>✨</span>
-          <span>Powered by GraphRAG • Grounded in biomedical knowledge graphs</span>
+          <span>Powered by GraphRAG &middot; Live PubMed data &middot; Optional GNN fusion</span>
         </motion.div>
       </div>
     </motion.div>

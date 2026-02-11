@@ -33,19 +33,12 @@ function ExampleQuestions({ onExampleClick }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <div style={{
-          textAlign: 'center',
-          marginBottom: '2rem',
-        }}>
-          <h3 style={{
-            color: 'var(--sea-crystal)',
-            fontSize: '1.8rem',
-            marginBottom: '0.5rem',
-          }}>
-            🏛️ Explore Ancient Wisdom
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h3 style={{ color: 'var(--sea-crystal)', fontSize: '1.8rem', marginBottom: '0.5rem' }}>
+            Explore Biomedical Knowledge
           </h3>
           <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-            Try these example questions to begin your journey
+            Try these example questions to get started
           </p>
         </div>
 
@@ -106,7 +99,7 @@ function ExampleQuestions({ onExampleClick }) {
                   fontSize: '0.9rem',
                   fontStyle: 'italic',
                 }}>
-                  Click to explore →
+                  Click to explore
                 </div>
               </div>
             </motion.div>

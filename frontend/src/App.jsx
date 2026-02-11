@@ -1,93 +1,54 @@
-/**
- * BioGraphRAG Application
- *
- * Main application component providing biomedical question-answering capabilities
- * using graph-based retrieval-augmented generation (GraphRAG) architecture.
- *
- * @module App
- * @requires react
- * @requires framer-motion
- */
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import Header from './components/Header'
+import SearchBar from './components/SearchBar'
+import ResultsPanel from './components/ResultsPanel'
+import GraphVisualization from './components/GraphVisualization'
+import ExampleQuestions from './components/ExampleQuestions'
+import './App.css'
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import Header from './components/Header';
-import SearchBar from './components/SearchBar';
-import ResultsPanel from './components/ResultsPanel';
-import GraphVisualization from './components/GraphVisualization';
-import ExampleQuestions from './components/ExampleQuestions';
-import BackgroundDecorations from './components/BackgroundDecorations';
-import './styles/App.css';
+const API_BASE = import.meta.env.VITE_API_URL || ''
 
-/**
- * Application root component
- *
- * Manages application state including user input, API responses,
- * loading states, error handling, and graph visualization controls.
- *
- * @component
- * @returns {JSX.Element} The rendered application
- */
 function App() {
-  const [question, setQuestion] = useState('');
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [showGraph, setShowGraph] = useState(false);
+  const [question, setQuestion] = useState('')
+  const [results, setResults] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [showGraph, setShowGraph] = useState(false)
 
-  /**
-   * Handles question submission and API interaction
-   *
-   * Sends POST request to /api/qa endpoint with the user's question
-   * and processes the response containing answer, nodes, edges, and evidence.
-   *
-   * @async
-   * @param {string} searchQuestion - The biomedical question to process
-   * @throws {Error} When API request fails or returns non-OK status
-   */
   const handleSearch = async (searchQuestion) => {
-    setLoading(true);
-    setError(null);
-    setQuestion(searchQuestion);
+    setLoading(true)
+    setError(null)
+    setQuestion(searchQuestion)
 
     try {
-      const response = await fetch('/api/qa', {
+      const response = await fetch(`${API_BASE}/api/qa`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: searchQuestion }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
+        throw new Error(`API request failed with status ${response.status}`)
       }
 
-      const data = await response.json();
-      setResults(data);
-      setShowGraph(true);
+      const data = await response.json()
+      setResults(data)
+      setShowGraph(true)
     } catch (err) {
-      setError(err.message);
-      console.error('Error processing question:', err);
+      setError(err.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  /**
-   * Handles example question selection
-   *
-   * @param {string} exampleQuestion - Pre-defined example question
-   */
   const handleExampleClick = (exampleQuestion) => {
-    setQuestion(exampleQuestion);
-    handleSearch(exampleQuestion);
-  };
+    setQuestion(exampleQuestion)
+    handleSearch(exampleQuestion)
+  }
 
   return (
     <div className="app-container">
-      <BackgroundDecorations />
-
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -131,7 +92,7 @@ function App() {
               transition={{ duration: 2, repeat: Infinity }}
               className="loading-text"
             >
-              Processing query and retrieving knowledge graph data
+              Fetching biomedical data and building knowledge graph...
             </motion.p>
           </motion.div>
         )}
@@ -179,7 +140,7 @@ function App() {
         )}
       </motion.div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
