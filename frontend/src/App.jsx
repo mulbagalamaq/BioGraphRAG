@@ -16,7 +16,7 @@ import SearchBar from './components/SearchBar';
 import ResultsPanel from './components/ResultsPanel';
 import GraphVisualization from './components/GraphVisualization';
 import ExampleQuestions from './components/ExampleQuestions';
-import BackgroundDecorations from './components/BackgroundDecorations';
+import BackgroundDecorations from './components/GreekDecorations';
 import './styles/App.css';
 
 /**

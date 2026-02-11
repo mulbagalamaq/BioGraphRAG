@@ -35,19 +35,31 @@ import numpy as np
 
 from sentence_transformers import SentenceTransformer
 
-from src.retrieval.vector_store import query_vectors
 from src.retrieval.prune import prune_subgraph
 from src.qa.prompt import build_prompt
-from src.gnn.pyg_rag import (
-    build_pyg_from_subgraph,
-    encode_texts,
-    fuse_vectors,
-    gnn_graph_embedding,
-    rank_facts,
-    set_structural_vectors,
-    structural_fact_vectors,
-    textify_subgraph,
-)
+
+# Optional: OpenSearch vector store (requires opensearchpy + boto3)
+try:
+    from src.retrieval.vector_store import query_vectors
+    HAS_OPENSEARCH = True
+except ImportError:
+    HAS_OPENSEARCH = False
+
+# Optional: PyG GNN fusion (requires torch + torch_geometric)
+try:
+    from src.gnn.pyg_rag import (
+        build_pyg_from_subgraph,
+        encode_texts,
+        fuse_vectors,
+        gnn_graph_embedding,
+        rank_facts,
+        set_structural_vectors,
+        structural_fact_vectors,
+        textify_subgraph,
+    )
+    HAS_PYG = True
+except ImportError:
+    HAS_PYG = False
 
 from src.utils.config import load_config
 
@@ -102,6 +114,8 @@ def vector_seed(config_path: str, question_vec: List[float], top_k: int, questio
         from src.retrieval.vector_store_local import query_local_vectors
         return query_local_vectors(config_path, question_vec, top_k=top_k)
     else:
+        if not HAS_OPENSEARCH:
+            raise ImportError("OpenSearch backend requires 'opensearchpy' package. Install with: pip install opensearch-py")
         return query_vectors(config_path, question_vec, top_k=top_k)
 
 
@@ -123,6 +137,10 @@ def prune_graph(nodes: List[Dict], edges: List[Dict], max_nodes: int) -> Tuple[L
 
 def pyg_fusion(cfg, nodes: List[Dict], edges: List[Dict], top_facts: int) -> Tuple[List[Dict], List[Dict]]:
     """Fuse PrimeKG + PubMedKG signals with PyG and keep the top facts."""
+
+    if not HAS_PYG:
+        # Skip GNN fusion if PyTorch Geometric not installed — return nodes/edges as-is
+        return nodes, edges
 
     text_facts = textify_subgraph(nodes, edges)
     if not text_facts:
