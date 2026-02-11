@@ -1,8 +1,0 @@
-# Railway deployment configuration - Minimal standalone backend
-[build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile.minimal"
-
-[deploy]
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10

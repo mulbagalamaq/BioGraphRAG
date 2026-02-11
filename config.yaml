@@ -1,0 +1,41 @@
+# BioGraphRAG Configuration
+# Secrets: set GROQ_API_KEY as environment variable
+
+embedding:
+  model: sentence-transformers/all-MiniLM-L6-v2
+
+ncbi:
+  email: biographrag@example.com
+  api_key: null
+
+llm:
+  provider: groq
+  api_url: https://api.groq.com/openai/v1/chat/completions
+  api_key: ${GROQ_API_KEY}
+  model: llama-3.1-8b-instant
+  temperature: 0.2
+  max_tokens: 512
+
+retrieval:
+  max_publications: 10
+  max_genes: 5
+  max_nodes: 30
+
+pruning:
+  max_nodes: 25
+  prizes:
+    Gene: 3.0
+    Disease: 2.5
+    Drug: 2.0
+    Publication: 1.5
+    default: 1.0
+
+gnn:
+  enabled: true
+  model: node2vec
+  dim: 32
+  epochs: 1
+  walk_length: 10
+  context_size: 5
+  walks_per_node: 3
+  top_facts: 20

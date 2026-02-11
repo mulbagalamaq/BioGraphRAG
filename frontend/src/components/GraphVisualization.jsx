@@ -8,7 +8,6 @@ function GraphVisualization({ nodes, edges }) {
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
 
   useEffect(() => {
-    // Update dimensions based on container
     const updateDimensions = () => {
       const container = graphRef.current?.parentElement
       if (container) {
@@ -18,33 +17,32 @@ function GraphVisualization({ nodes, edges }) {
         })
       }
     }
-
     updateDimensions()
     window.addEventListener('resize', updateDimensions)
     return () => window.removeEventListener('resize', updateDimensions)
   }, [])
 
   useEffect(() => {
-    // Transform data for force graph
     const transformedNodes = nodes.map((node, index) => ({
-      id: node['~id'] || node.id || `node-${index}`,
-      name: node.name || node['~id'] || `Node ${index}`,
-      type: node.type || (node['~labels'] && node['~labels'][0]) || 'Unknown',
+      id: node.id || `node-${index}`,
+      name: node.name || node.id || `Node ${index}`,
+      type: node.type || 'Unknown',
       description: node.description || '',
       val: 20,
     }))
 
-    const transformedLinks = edges.map((edge, index) => ({
-      source: edge['~from'] || edge.source || edge['~id'],
-      target: edge['~to'] || edge.target || edge['~id'],
-      label: edge.relation || edge['~type'] || 'RELATED',
-      id: `link-${index}`,
-    }))
+    const nodeIds = new Set(transformedNodes.map(n => n.id))
 
-    setGraphData({
-      nodes: transformedNodes,
-      links: transformedLinks,
-    })
+    const transformedLinks = edges
+      .filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target))
+      .map((edge, index) => ({
+        source: edge.source,
+        target: edge.target,
+        label: edge.relation || 'RELATED',
+        id: `link-${index}`,
+      }))
+
+    setGraphData({ nodes: transformedNodes, links: transformedLinks })
   }, [nodes, edges])
 
   const getNodeColor = (node) => {
@@ -52,19 +50,9 @@ function GraphVisualization({ nodes, edges }) {
       Gene: '#6ec1cc',
       Disease: '#ff6b6b',
       Drug: '#d4af37',
-      GENE_: '#6ec1cc',
-      DISEASE_: '#ff6b6b',
-      DRUG_: '#d4af37',
+      Publication: '#8e99a4',
     }
-
-    // Check type or node id prefix
-    for (const [key, color] of Object.entries(colorMap)) {
-      if (node.type?.includes(key) || node.id?.startsWith(key)) {
-        return color
-      }
-    }
-
-    return '#2d9caa' // default sea color
+    return colorMap[node.type] || '#2d9caa'
   }
 
   const paintNode = (node, ctx, globalScale) => {
@@ -72,7 +60,6 @@ function GraphVisualization({ nodes, edges }) {
     const fontSize = 12 / globalScale
     const nodeRadius = Math.sqrt(node.val) * 1.5
 
-    // Draw node circle with glow
     ctx.shadowBlur = 15
     ctx.shadowColor = getNodeColor(node)
     ctx.fillStyle = getNodeColor(node)
@@ -80,13 +67,11 @@ function GraphVisualization({ nodes, edges }) {
     ctx.arc(node.x, node.y, nodeRadius, 0, 2 * Math.PI)
     ctx.fill()
 
-    // Draw white border
     ctx.shadowBlur = 0
     ctx.strokeStyle = '#ffffff'
     ctx.lineWidth = 2 / globalScale
     ctx.stroke()
 
-    // Draw label
     ctx.font = `${fontSize}px Inter, sans-serif`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
@@ -100,21 +85,18 @@ function GraphVisualization({ nodes, edges }) {
     const start = link.source
     const end = link.target
 
-    // Calculate link positioning
     const textPos = {
       x: start.x + (end.x - start.x) / 2,
       y: start.y + (end.y - start.y) / 2,
     }
 
-    // Draw link
-    ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)' // gold with transparency
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.6)'
     ctx.lineWidth = 2 / globalScale
     ctx.beginPath()
     ctx.moveTo(start.x, start.y)
     ctx.lineTo(end.x, end.y)
     ctx.stroke()
 
-    // Draw label on link
     if (link.label) {
       const fontSize = 10 / globalScale
       ctx.font = `${fontSize}px Inter, sans-serif`
@@ -140,58 +122,27 @@ function GraphVisualization({ nodes, edges }) {
           alignItems: 'center',
           marginBottom: '1.5rem',
         }}>
-          <h3 style={{
-            margin: 0,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}>
-            <span style={{ color: 'var(--gold-accent)' }}>🗺️</span>
+          <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             Knowledge Graph Visualization
           </h3>
-          <div style={{
-            fontSize: '0.9rem',
-            color: 'rgba(255, 255, 255, 0.7)',
-          }}>
-            {graphData.nodes.length} nodes • {graphData.links.length} relationships
+          <div style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+            {graphData.nodes.length} nodes &bull; {graphData.links.length} relationships
           </div>
         </div>
 
         {/* Legend */}
-        <div style={{
-          display: 'flex',
-          gap: '1.5rem',
-          marginBottom: '1rem',
-          flexWrap: 'wrap',
-          fontSize: '0.9rem',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: '#6ec1cc',
-            }} />
-            <span>Genes</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: '#ff6b6b',
-            }} />
-            <span>Diseases</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              borderRadius: '50%',
-              background: '#d4af37',
-            }} />
-            <span>Drugs</span>
-          </div>
+        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', fontSize: '0.9rem' }}>
+          {[
+            { color: '#6ec1cc', label: 'Genes' },
+            { color: '#ff6b6b', label: 'Diseases' },
+            { color: '#d4af37', label: 'Drugs' },
+            { color: '#8e99a4', label: 'Publications' },
+          ].map(({ color, label }) => (
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: color }} />
+              <span>{label}</span>
+            </div>
+          ))}
         </div>
 
         <div
@@ -218,9 +169,7 @@ function GraphVisualization({ nodes, edges }) {
             linkDirectionalParticleSpeed={0.005}
             backgroundColor="rgba(0,0,0,0)"
             cooldownTicks={100}
-            onNodeClick={(node) => {
-              console.log('Node clicked:', node)
-            }}
+            onNodeClick={(node) => console.log('Node clicked:', node)}
           />
         </div>
 
@@ -236,7 +185,7 @@ function GraphVisualization({ nodes, edges }) {
             textAlign: 'center',
           }}
         >
-          💡 Click and drag nodes to explore • Scroll to zoom
+          Click and drag nodes to explore &middot; Scroll to zoom
         </motion.p>
       </div>
     </motion.div>

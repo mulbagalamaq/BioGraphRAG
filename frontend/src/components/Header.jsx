@@ -8,13 +8,9 @@ function Header() {
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
-      style={{
-        textAlign: 'center',
-        marginBottom: '3rem',
-      }}
+      style={{ textAlign: 'center', marginBottom: '3rem' }}
     >
       <div className="glass-card glass-card-strong" style={{ padding: '3rem 2rem' }}>
-        {/* Greek Temple Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -32,21 +28,15 @@ function Header() {
           <BiNetworkChart size={48} color="var(--gold-accent)" className="float-animation" />
         </motion.div>
 
-        {/* Title */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          style={{
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            marginBottom: '1rem',
-            letterSpacing: '2px',
-          }}
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', marginBottom: '1rem', letterSpacing: '2px' }}
         >
           BioGraphRAG
         </motion.h1>
 
-        {/* Greek-style subtitle */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -59,7 +49,7 @@ function Header() {
             marginBottom: '1rem',
           }}
         >
-          <span style={{ color: 'var(--gold-accent)', fontSize: '1.5rem' }}>◆</span>
+          <span style={{ color: 'var(--gold-accent)', fontSize: '1.5rem' }}>&#9670;</span>
           <h2 style={{
             fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
             fontWeight: 400,
@@ -68,10 +58,9 @@ function Header() {
           }}>
             The Oracle of Biomedical Knowledge
           </h2>
-          <span style={{ color: 'var(--gold-accent)', fontSize: '1.5rem' }}>◆</span>
+          <span style={{ color: 'var(--gold-accent)', fontSize: '1.5rem' }}>&#9670;</span>
         </motion.div>
 
-        {/* Description */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -84,13 +73,11 @@ function Header() {
             lineHeight: '1.6',
           }}
         >
-          Navigate the vast seas of biomedical research with the wisdom of ancient Greece.
+          Ask questions about genes, diseases, and drugs.
           <br />
-          Ask questions about genes, diseases, and drugs, and receive grounded answers
-          from our knowledge graph.
+          Get grounded answers from live PubMed data, knowledge graphs, and optional GNN fusion.
         </motion.p>
 
-        {/* Greek wave pattern */}
         <div className="greek-pattern" style={{ marginTop: '2rem' }}>
           <motion.div
             initial={{ scaleX: 0 }}
