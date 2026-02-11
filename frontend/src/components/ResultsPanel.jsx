@@ -1,16 +1,15 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { BiNetworkChart } from 'react-icons/bi'
-import { GiScroll, GiTwoCoins } from 'react-icons/gi'
-import { MdScience } from 'react-icons/md'
+import { MdScience, MdDescription, MdCategory } from 'react-icons/md'
 import ReactMarkdown from 'react-markdown'
 
 function ResultsPanel({ results, onToggleGraph, showGraph }) {
   const [activeTab, setActiveTab] = useState('answer')
 
   const tabs = [
-    { id: 'answer', label: 'Answer', icon: <GiScroll size={20} /> },
-    { id: 'nodes', label: 'Entities', icon: <GiTwoCoins size={20} /> },
+    { id: 'answer', label: 'Answer', icon: <MdDescription size={20} /> },
+    { id: 'nodes', label: 'Entities', icon: <MdCategory size={20} /> },
     { id: 'evidence', label: 'Evidence', icon: <MdScience size={20} /> },
   ]
 
